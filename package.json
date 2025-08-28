@@ -1,5 +1,5 @@
 {
-  "name": "@astrojs/github-activity",
+  "name": "astro-github-activity",
   "version": "0.0.0",
   "description": "A calendar component for displaying GitHub activity",
   "author": {
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zincognity/github-activity.git"
+    "url": "git+https://github.com/zincognity/astro-github-activity.git"
   },
   "files": ["src", "index.ts", "index.types.ts", "index.data.ts"],
   "keywords": ["astro", "calendar", "github", "activity"],

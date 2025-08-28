@@ -15,14 +15,14 @@ to fetch GitHub activity data.
 Install via npm:
 
 ```bash
-npm install astro-activity-calendar
+npm install astro-github-activity
 ```
 
 # Usage
 
 ```astro
 ---
-import ActivityCalendar from "astro-activity-calendar"
+import ActivityCalendar from "astro-github-activity"
 
 // Example: pass GitHub username to fetch contributions
 const username = "your-github-username"
@@ -49,7 +49,7 @@ const username = "your-github-username"
 
 ```astro
 ---
-import ActivityCalendar from "astro-activity-calendar"
+import ActivityCalendar from "astro-github-activity"
 ---
 
 <ActivityCalendar username={"zincognity"} theme="dark" />
@@ -61,7 +61,7 @@ If you want to contribute or test locally:
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/astro-activity-calendar.git
+git clone https://github.com/zincognity/github-activity.git
 
 # Install dependencies
 npm install
