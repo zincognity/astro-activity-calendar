@@ -39,7 +39,7 @@ jobs:
         run: |
           bun publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Try to merge main in development
         continue-on-error: true
