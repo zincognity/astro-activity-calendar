@@ -1,0 +1,221 @@
+---
+import { formatDate } from "@/lib/format-date"
+import {
+  getGithubActivityData,
+  githubColorLevel,
+} from "./data/github-activity-data"
+import { tf } from "@/lib/format-text"
+
+interface Props {
+  locale: string
+  user: string
+  hoverMessage: string
+  totalMessage: string
+}
+
+const { locale, user, hoverMessage, totalMessage } = Astro.props
+
+// Data
+const { total, contributions } = await getGithubActivityData(user)
+
+// Layout constants
+const CELL = 14 // Size of each cell (square)
+const GAP = 4 // Gap between cells
+const STEP = CELL + GAP // Distance between cells (18px)
+const TOP_OFFSET = 22 // Vertical offset from top for first row
+
+const SVG_W = 950 // Fixed SVG width
+const SVG_H = 144 // Fixed SVG height
+
+// Number of weeks = total contributions / 7 days
+const weeksCount = Math.ceil(contributions.length / 7)
+const weeks = Array.from({ length: weeksCount })
+
+// A normalized cell structure with absolute coordinates
+type Cell = {
+  weekIndex: number
+  dayIndex: number
+  x: number
+  y: number
+  date: string
+  level: keyof typeof githubColorLevel
+  count: number
+}
+
+// Flattened array of all cells in the grid
+const cells: Cell[] = weeks.flatMap((_, weekIndex) =>
+  contributions
+    .slice(weekIndex * 7, weekIndex * 7 + 7)
+    .map(({ date, level, count }, dayIndex) => ({
+      weekIndex,
+      dayIndex,
+      x: weekIndex * STEP,
+      y: TOP_OFFSET + dayIndex * STEP,
+      date,
+      level,
+      count,
+    }))
+)
+---
+
+<div class="relative pb-8 lg:pt-4 lg:pb-4">
+  <div
+    id="activity-wrapper"
+    class="relative"
+    style={`width:${SVG_W}px; height:${SVG_H}px;`}
+  >
+    <svg
+      id="activity-svg"
+      width={SVG_W}
+      height={SVG_H}
+      viewBox={`0 0 ${SVG_W} ${SVG_H}`}
+      style="display:block; overflow:visible;"
+    >
+      <g>
+        {
+          weeks.map((_, weekIndex) => {
+            const week = contributions.slice(weekIndex * 7, weekIndex * 7 + 7)
+            if (week.length === 0 || weekIndex === 0) return null
+
+            const month = formatDate(locale, week[0]?.date)
+            const prevWeek = contributions.slice(
+              (weekIndex - 1) * 7,
+              (weekIndex - 1) * 7 + 7
+            )
+            const prevMonth =
+              prevWeek.length > 0 ? formatDate(locale, prevWeek[0]?.date) : null
+
+            // Only render month label when it changes
+            if (month !== prevMonth) {
+              return (
+                <text x={weekIndex * STEP} y={0} fill="currentColor">
+                  {month.replace(/^./, (c) => c.toUpperCase())}
+                </text>
+              )
+            }
+            return null
+          })
+        }
+      </g>
+
+      {
+        cells.map((cell, i) => (
+          <rect
+            data-cell-index={i}
+            x={cell.x}
+            y={cell.y}
+            width={CELL}
+            height={CELL}
+            rx="2"
+            ry="2"
+            fill={githubColorLevel[cell.level]}
+            style="stroke: rgba(255, 255, 255, 0.04); cursor:pointer;"
+          />
+        ))
+      }
+    </svg>
+
+    <div
+      id="activity-overlays"
+      class="absolute top-0 left-0"
+      style={`width:${SVG_W}px; height:${SVG_H}px;`}
+    >
+      {
+        cells.map((cell, i) => {
+          const tooltipText = tf(hoverMessage, {
+            count: cell.count,
+            date: new Date(cell.date).toLocaleString(locale, {
+              month: "short",
+              day: "numeric",
+            }),
+          })
+
+          return (
+            <div
+              class="activity-overlay group pointer-events-auto absolute"
+              data-cell-index={i}
+              style={`left:0px; top:0px; width:${CELL}px; height:${CELL}px;`}
+            >
+              <span class="pointer-events-none absolute bottom-full left-1/2 w-max -translate-x-1/2 -translate-y-0.5 rounded-md bg-stone-800 px-2 py-1 text-xs text-stone-50 opacity-0 transition-all group-hover:-translate-y-1 group-hover:opacity-100">
+                {tooltipText}
+              </span>
+            </div>
+          )
+        })
+      }
+    </div>
+  </div>
+
+  <span
+    class="text-muted-foreground mt-2 block w-full text-left text-sm"
+    set:html={tf(totalMessage, {
+      total: total.lastYear,
+    })}
+  />
+</div>
+
+<script type="module">
+  /**
+   * Synchronizes the HTML overlays with the SVG cells.
+   * - Reads bounding boxes of <rect> elements
+   * - Positions the overlays at the exact same coordinates
+   * - Ensures tooltips are always aligned, even if the SVG is scaled
+   */
+  function syncOverlays() {
+    const svg = document.getElementById("activity-svg")
+    const wrapper = document.getElementById("activity-wrapper")
+    const overlays = document.querySelectorAll(
+      "#activity-overlays .activity-overlay"
+    )
+    if (!svg || !wrapper || overlays.length === 0) return
+
+    const wrapperRect = wrapper.getBoundingClientRect()
+    const rects = svg.querySelectorAll("rect[data-cell-index]")
+
+    rects.forEach((r) => {
+      const idx = Number(r.getAttribute("data-cell-index"))
+      const overlay = document.querySelector(
+        `#activity-overlays .activity-overlay[data-cell-index="${idx}"]`
+      )
+      if (!overlay) return
+      const rRect = r.getBoundingClientRect()
+
+      // Position relative to wrapper container
+      const left = rRect.left - wrapperRect.left
+      const top = rRect.top - wrapperRect.top
+
+      overlay.style.left = `${Math.round(left)}px`
+      overlay.style.top = `${Math.round(top)}px`
+      overlay.style.width = `${Math.round(rRect.width)}px`
+      overlay.style.height = `${Math.round(rRect.height)}px`
+    })
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Initial sync after render
+    requestAnimationFrame(syncOverlays)
+
+    // Re-sync on window resize
+    window.addEventListener("resize", () => requestAnimationFrame(syncOverlays))
+
+    // Observe wrapper size changes (responsive layouts)
+    const wrapper = document.getElementById("activity-wrapper")
+    if (window.ResizeObserver && wrapper) {
+      const ro = new ResizeObserver(() => requestAnimationFrame(syncOverlays))
+      ro.observe(wrapper)
+    }
+  })
+
+  // Support Astro client-side navigation swaps
+  document.addEventListener("astro:after-swap", () => {
+    requestAnimationFrame(syncOverlays)
+
+    window.addEventListener("resize", () => requestAnimationFrame(syncOverlays))
+
+    const wrapper = document.getElementById("activity-wrapper")
+    if (window.ResizeObserver && wrapper) {
+      const ro = new ResizeObserver(() => requestAnimationFrame(syncOverlays))
+      ro.observe(wrapper)
+    }
+  })
+</script>
