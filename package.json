@@ -1,6 +1,6 @@
 {
   "name": "astro-github-activity",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A calendar component for displaying GitHub activity",
   "author": {
     "name": "Incognity",
@@ -17,8 +17,18 @@
     "type": "git",
     "url": "git+https://github.com/zincognity/astro-github-activity.git"
   },
-  "files": ["src", "index.ts", "index.types.ts", "index.data.ts"],
-  "keywords": ["astro", "calendar", "github", "activity"],
+  "files": [
+    "src",
+    "index.ts",
+    "index.types.ts",
+    "index.data.ts"
+  ],
+  "keywords": [
+    "astro",
+    "calendar",
+    "github",
+    "activity"
+  ],
   "scripts": {
     "build": "astro build",
     "publish:package": "npm publish",
@@ -29,7 +39,10 @@
     "type:check": "astro check"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,astro,jsx,tsx,mdx}": ["eslint --fix", "prettier --write"]
+    "*.{js,ts,cjs,mjs,astro,jsx,tsx,mdx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "peerDependencies": {
     "tailwindcss": "^4.1.12",
