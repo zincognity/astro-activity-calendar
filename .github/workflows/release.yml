@@ -37,7 +37,7 @@ jobs:
 
       - name: Publish the application
         run: |
-          bun publish:package
+          bun publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
