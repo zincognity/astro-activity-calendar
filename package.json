@@ -1,5 +1,5 @@
 {
-  "name": "@zincognity/astro-activity-calendar",
+  "name": "astro-activity-calendar",
   "version": "1.0.0",
   "description": "A calendar component for displaying GitHub activity",
   "author": {

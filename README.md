@@ -1,43 +1,77 @@
-# Astro Starter Kit: Minimal
+# Astro Activity Calendar
 
-```sh
-bun create astro@latest -- --template minimal
+A reusable **Astro component** to display GitHub-like activity calendars.
+Perfect for showing contributions, activity heatmaps, or any date-based data in
+your Astro project.
+
+This component uses
+[github-contributions-api](https://github.com/grubersjoe/github-contributions-api)
+to fetch GitHub activity data.
+
+---
+
+## Installation
+
+Install via npm:
+
+```bash
+npm install astro-activity-calendar
+# or
+yarn add astro-activity-calendar
+# or
+pnpm add astro-activity-calendar
+# or
+bun add astro-activity-calendar
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+# Usage
 
-## 🚀 Project Structure
+```astro
+---
+import ActivityCalendar from "astro-activity-calendar"
 
-Inside of your Astro project, you'll see the following folders and files:
+// Example: pass GitHub username to fetch contributions
+const username = "your-github-username"
+---
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+<ActivityCalendar username={username} />
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+# Props
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+| Prop         | Type                          | Default                               | Description                                |
+| ------------ | ----------------------------- | ------------------------------------- | ------------------------------------------ |
+| username     | string                        | -                                     | GitHub username to fetch contributions for |
+| locale       | string                        | 'en'                                  | Locale for formatting dates and activity   |
+| theme        | 'light' \| 'dark' \| 'indigo' | 'indigo'                              | Theme for the calendar UI                  |
+| hoverMessage | string                        | '{{count}} contributions on {{date}}' | Message to display on hover                |
+| totalMessage | string                        | '{{count}} total contributions'       | Message to display for total contributions |
+| cache        | boolean                       | true                                  | Enable caching for API requests            |
+| themeProps   | object                        | -                                     | Additional props for the calendar theme    |
 
-Any static assets, like images, can be placed in the `public/` directory.
+# Examples
 
-## 🧞 Commands
+## Dark theme
 
-All commands are run from the root of the project, from a terminal:
+```astro
+---
+import ActivityCalendar from "astro-activity-calendar"
+---
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
+<ActivityCalendar username={"zincognity"} theme="dark" />
+```
 
-## 👀 Want to learn more?
+# Development
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+If you want to contribute or test locally:
+
+```bash
+# Clone the repo
+git clone https://github.com/your-username/astro-activity-calendar.git
+
+# Install dependencies
+npm install
+
+# Run a local Astro dev server
+npm run dev
+```
