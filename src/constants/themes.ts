@@ -44,9 +44,9 @@ export const themes: ThemeProps = {
       4: "#7c3aed",
     },
     meta: {
-      text: "text-indigo-900",
-      tooltipBg: "bg-indigo-700",
-      tooltipText: "text-white",
+      text: "text-neutral-200",
+      tooltipBg: "bg-neutral-800",
+      tooltipText: "text-neutral-50",
     },
   },
 } as const

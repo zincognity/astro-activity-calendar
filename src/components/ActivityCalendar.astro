@@ -9,8 +9,8 @@ import { LAYOUT } from "@/constants/layout"
 import { buildCells, buildMonthLabels } from "@/lib/builders"
 
 interface Props {
-  locale: string
   user: string
+  locale?: string
   hoverMessage?: string
   totalMessage?: string
   theme?: Theme
