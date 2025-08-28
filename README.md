@@ -16,12 +16,6 @@ Install via npm:
 
 ```bash
 npm install astro-activity-calendar
-# or
-yarn add astro-activity-calendar
-# or
-pnpm add astro-activity-calendar
-# or
-bun add astro-activity-calendar
 ```
 
 # Usage
