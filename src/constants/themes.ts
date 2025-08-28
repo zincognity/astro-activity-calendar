@@ -1,22 +1,10 @@
 // src/constants/themes.ts
-import type { Theme } from "@/types/theme"
+import type { ThemeProps } from "@/types/theme"
 
 /**
  * Color palettes + metadata for contribution levels (0–4).
  * Multiple themes are supported. You can switch depending on UI theme.
  */
-
-export type ThemeProps = Record<
-  Theme,
-  {
-    colors: Record<number, string>
-    meta: {
-      text: string
-      tooltipBg: string
-      tooltipText: string
-    }
-  }
->
 
 export const themes: ThemeProps = {
   dark: {

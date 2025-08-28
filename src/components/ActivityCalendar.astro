@@ -3,23 +3,24 @@
 import { formatDate } from "@/lib/format-date"
 import { getGithubActivityData } from "./data/github-activity-data"
 import { tf } from "@/lib/format-text"
-import type { Theme } from "@/types/theme"
+import type { Theme, ThemeProps } from "@/types/theme"
 import { themes } from "@/constants/themes"
 
 interface Props {
   locale: string
   user: string
-  hoverMessage: string
-  totalMessage: string
+  hoverMessage?: string
+  totalMessage?: string
   theme?: Theme
   cache?: boolean
+  themeProps?: ThemeProps
 }
 
 const {
   locale,
   user,
-  hoverMessage,
-  totalMessage,
+  hoverMessage = "{{count}} contributions on {{date}}",
+  totalMessage = "{{total}} total contributions",
   theme = "indigo",
   cache,
 } = Astro.props
