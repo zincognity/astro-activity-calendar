@@ -1,6 +1,6 @@
-import type { Activity } from "@/components/data/github-activity-data"
-import { LAYOUT, STEP } from "@/constants/layout"
-import type { Cell } from "@/types/cell"
+import { LAYOUT, STEP } from "../constants/layout"
+import type { Cell } from "../types/cell"
+import type { Activity } from "../types/github"
 import { formatDate } from "./format-date"
 
 export function buildCells(contributions: Activity[]): Cell[] {

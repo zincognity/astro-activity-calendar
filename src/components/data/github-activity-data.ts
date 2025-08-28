@@ -1,3 +1,5 @@
+import type { Contribution } from "../../types/github"
+
 /**
  * Cached contribution data from the GitHub contributions API.
  * This is used to avoid unnecessary requests within a 1-hour window.
@@ -13,37 +15,6 @@ let lastFetch = 0
  * One hour in milliseconds.
  */
 const HOUR = 1000 * 60 * 60
-
-/**
- * Representation of a contribution response.
- */
-interface Contribution {
-  /**
-   * Aggregated totals of contributions.
-   */
-  total: {
-    lastYear: number
-  }
-
-  /**
-   * Daily contribution activity list.
-   */
-  contributions: Activity[]
-}
-
-/**
- * Single activity entry (per day).
- */
-export interface Activity {
-  /** ISO date string of the activity (e.g. "2025-08-28"). */
-  date: string
-
-  /** Number of contributions on this day. */
-  count: number
-
-  /** Contribution intensity level (0–4). */
-  level: number
-}
 
 /**
  * Fetches GitHub contribution data for a given user.
