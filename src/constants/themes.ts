@@ -1,4 +1,4 @@
-import type { ThemeProps } from "@/types/theme"
+import type { ThemeProps } from "../types/theme"
 
 /**
  * Color palettes + metadata for contribution levels (0–4).
