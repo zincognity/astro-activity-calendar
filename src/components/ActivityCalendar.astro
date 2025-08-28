@@ -5,6 +5,8 @@ import { getGithubActivityData } from "./data/github-activity-data"
 import { tf } from "@/lib/format-text"
 import type { Theme, ThemeProps } from "@/types/theme"
 import { themes } from "@/constants/themes"
+import { LAYOUT } from "@/constants/layout"
+import { buildCells, buildMonthLabels } from "@/lib/builders"
 
 interface Props {
   locale: string
@@ -17,7 +19,7 @@ interface Props {
 }
 
 const {
-  locale,
+  locale = "en",
   user,
   hoverMessage = "{{count}} contributions on {{date}}",
   totalMessage = "{{total}} total contributions",
@@ -28,66 +30,11 @@ const {
 // Fetch GitHub activity data (server-side)
 const { total, contributions } = await getGithubActivityData(user, cache)
 
-// Layout
-const LAYOUT = {
-  CELL: 14,
-  GAP: 4,
-  TOP_OFFSET: 22,
-  SVG_W: 950,
-  SVG_H: 144,
-}
-const STEP = LAYOUT.CELL + LAYOUT.GAP
-
-// Helpers & data structures
-type Cell = {
-  weekIndex: number
-  dayIndex: number
-  x: number
-  y: number
-  date: string
-  level: number
-  count: number
-}
-
 // Current theme data
 const { colors, meta } = themes[theme]
 
-const weeksCount = Math.ceil(contributions.length / 7)
-const weeks = Array.from({ length: weeksCount })
-
-const cells: Cell[] = weeks.flatMap((_, weekIndex) =>
-  contributions
-    .slice(weekIndex * 7, weekIndex * 7 + 7)
-    .map(({ date, level, count }, dayIndex) => ({
-      weekIndex,
-      dayIndex,
-      x: weekIndex * STEP,
-      y: LAYOUT.TOP_OFFSET + dayIndex * STEP,
-      date,
-      level: Number(level),
-      count,
-    }))
-)
-
-// PRECOMPUTE month labels (Astro-friendly: simple data, no JSX from functions)
-const monthLabels: { x: number; label: string }[] = []
-for (let weekIndex = 1; weekIndex < weeksCount; weekIndex++) {
-  const week = contributions.slice(weekIndex * 7, weekIndex * 7 + 7)
-  if (week.length === 0) continue
-
-  const month = formatDate(locale, week[0]?.date)
-  const prevWeek = contributions.slice(
-    (weekIndex - 1) * 7,
-    (weekIndex - 1) * 7 + 7
-  )
-  const prevMonth =
-    prevWeek.length > 0 ? formatDate(locale, prevWeek[0]?.date) : null
-
-  if (month !== prevMonth) {
-    const label = month.charAt(0).toUpperCase() + month.slice(1)
-    monthLabels.push({ x: weekIndex * STEP, label })
-  }
-}
+const cells = buildCells(contributions)
+const monthLabels = buildMonthLabels(contributions, locale)
 ---
 
 <div class="relative pb-8 lg:pt-4 lg:pb-4">

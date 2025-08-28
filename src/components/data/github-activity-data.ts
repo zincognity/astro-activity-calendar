@@ -34,7 +34,7 @@ interface Contribution {
 /**
  * Single activity entry (per day).
  */
-interface Activity {
+export interface Activity {
   /** ISO date string of the activity (e.g. "2025-08-28"). */
   date: string
 
