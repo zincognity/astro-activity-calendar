@@ -1,14 +1,40 @@
 {
-  "name": "astro-activity-calendar",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "astro": "^5.13.4"
-  }
+    "name": "astro-activity-calendar",
+    "type": "module",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "astro dev",
+        "build": "astro build",
+        "preview": "astro preview",
+        "format": "prettier --write .",
+        "lint": "eslint . --ext .astro,.js,.jsx,.ts,.tsx,.mdx --fix",
+        "astro": "astro"
+    },
+    "dependencies": {
+        "@tailwindcss/vite": "^4.1.12",
+        "astro": "^5.13.4",
+        "tailwindcss": "^4.1.12"
+    },
+    "devDependencies": {
+        "@eslint/js": "9.34.0",
+        "@typescript-eslint/parser": "8.41.0",
+        "eslint": "9.34.0",
+        "eslint-config-prettier": "10.1.8",
+        "eslint-plugin-astro": "1.3.1",
+        "eslint-scope": "8.4.0",
+        "lint-staged": "16.1.5",
+        "prettier": "3.6.2",
+        "prettier-plugin-astro": "0.14.1",
+        "prettier-plugin-astro-organize-imports": "0.4.11",
+        "prettier-plugin-organize-imports": "4.2.0",
+        "prettier-plugin-tailwindcss": "0.6.14",
+        "typescript": "5.9.2",
+        "typescript-eslint": "8.41.0"
+    },
+    "lint-staged": {
+        "*.{js,ts,cjs,mjs,astro,jsx,tsx,mdx}": [
+            "eslint --fix",
+            "prettier --write"
+        ]
+    }
 }
