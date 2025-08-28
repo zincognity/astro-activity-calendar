@@ -1,4 +1,3 @@
-// src/constants/themes.ts
 import type { ThemeProps } from "@/types/theme"
 
 /**

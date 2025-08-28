@@ -1,12 +1,10 @@
 ---
-// src/components/GithubActivity.astro
-import { formatDate } from "@/lib/format-date"
 import { getGithubActivityData } from "./data/github-activity-data"
-import { tf } from "@/lib/format-text"
-import type { Theme, ThemeProps } from "@/types/theme"
-import { themes } from "@/constants/themes"
-import { LAYOUT } from "@/constants/layout"
-import { buildCells, buildMonthLabels } from "@/lib/builders"
+import { tf } from "../lib/format-text"
+import type { Theme, ThemeProps } from "../types/theme"
+import { themes } from "../constants/themes"
+import { LAYOUT } from "../constants/layout"
+import { buildCells, buildMonthLabels } from "../lib/builders"
 
 interface Props {
   user: string

@@ -35,23 +35,6 @@
     "types": ["astro/client"],
 
     // Alias
-    "baseUrl": ".",
-    "paths": {
-      // Core
-      "@/*": ["./src/*"],
-
-      // Assets
-      "@assets/*": ["./src/assets/*"],
-
-      // Styles
-      "@styles": ["./src/core/styles/global.css"],
-      "@tailwindcss-config": ["./tailwind.config.js"],
-
-      // Preact adaptation
-      "react": ["./node_modules/preact/compat/"],
-      "react/jsx-runtime": ["./node_modules/preact/jsx-runtime"],
-      "react-dom": ["./node_modules/preact/compat/"],
-      "react-dom/*": ["./node_modules/preact/compat/*"]
-    }
+    "baseUrl": "."
   }
 }
