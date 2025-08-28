@@ -17,33 +17,20 @@
     "type": "git",
     "url": "git+https://github.com/zincognity/astro-github-activity.git"
   },
-  "files": [
-    "src",
-    "index.ts",
-    "index.types.ts",
-    "index.data.ts"
-  ],
-  "keywords": [
-    "astro",
-    "calendar",
-    "github",
-    "activity"
-  ],
+  "files": ["src", "index.ts", "index.types.ts", "index.data.ts"],
+  "keywords": ["astro", "calendar", "github", "activity"],
   "license": "MIT",
   "scripts": {
     "build": "astro build",
     "publish:package": "npm publish",
-    "lint": "eslint . --ext .astro,.js,.jsx,.ts,.tsx,.mdx",
-    "lint:fix": "eslint . --ext .astro,.js,.jsx,.ts,.tsx,.mdx --fix",
+    "lint": "eslint . --ext .astro,.js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .astro,.js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check",
     "type:check": "astro check"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,astro,jsx,tsx,mdx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.{js,ts,cjs,mjs,astro,jsx,tsx}": ["eslint --fix", "prettier --write"]
   },
   "peerDependencies": {
     "tailwindcss": "^4.1.12",
