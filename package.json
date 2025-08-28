@@ -17,6 +17,10 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zincognity/astro-activity-calendar.git"
+  },
   "files": ["src", "index.ts", "index.types.ts", "index.data.ts"],
   "keywords": ["astro", "calendar", "github", "activity"],
   "scripts": {

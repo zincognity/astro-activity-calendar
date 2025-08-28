@@ -1,0 +1,53 @@
+name: Publish GitHub Package Registry
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.2.2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build the application
+        run: bun run build
+
+      - name: Publish the application
+        run: |
+          bun publish:package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Try to merge main in development
+        continue-on-error: true
+        run: |
+          git config pull.rebase false
+          git pull origin development
+          git checkout development
+          git merge origin/main --allow-unrelated-histories --no-edit
+          git push origin development
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
