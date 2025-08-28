@@ -25,7 +25,6 @@
   "keywords": ["astro", "calendar", "github", "activity"],
   "scripts": {
     "build": "astro build",
-    "prepare": "husky",
     "lint": "eslint . --ext .astro,.js,.jsx,.ts,.tsx,.mdx",
     "lint:fix": "eslint . --ext .astro,.js,.jsx,.ts,.tsx,.mdx --fix",
     "format": "prettier --write .",
@@ -47,7 +46,6 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-astro": "1.3.1",
     "eslint-scope": "8.4.0",
-    "husky": "^9.1.7",
     "lint-staged": "16.1.5",
     "prettier": "3.6.2",
     "prettier-plugin-astro": "0.14.1",
