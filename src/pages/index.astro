@@ -12,14 +12,13 @@ import ActivityCalendar from "@/components/ActivityCalendar.astro"
     <meta name="generator" content={Astro.generator} />
     <title>Astro</title>
   </head>
-  <body>
-    <h1>Astro</h1>
-
+  <body class="bg-black">
     <ActivityCalendar
       user="zincognity"
       locale="es"
       hoverMessage="{{count}} contribuciones el {{date}}"
       totalMessage="Hola {{total}}"
+      theme="indigo"
     />
   </body>
 </html>

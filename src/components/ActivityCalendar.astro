@@ -1,48 +1,59 @@
 ---
+// src/components/GithubActivity.astro
 import { formatDate } from "@/lib/format-date"
-import {
-  getGithubActivityData,
-  githubColorLevel,
-} from "./data/github-activity-data"
+import { getGithubActivityData } from "./data/github-activity-data"
 import { tf } from "@/lib/format-text"
+import type { Theme } from "@/types/theme"
+import { themes } from "@/constants/themes"
 
 interface Props {
   locale: string
   user: string
   hoverMessage: string
   totalMessage: string
+  theme?: Theme
+  cache?: boolean
 }
 
-const { locale, user, hoverMessage, totalMessage } = Astro.props
+const {
+  locale,
+  user,
+  hoverMessage,
+  totalMessage,
+  theme = "indigo",
+  cache,
+} = Astro.props
 
-// Data
-const { total, contributions } = await getGithubActivityData(user)
+// Fetch GitHub activity data (server-side)
+const { total, contributions } = await getGithubActivityData(user, cache)
 
-// Layout constants
-const CELL = 14 // Size of each cell (square)
-const GAP = 4 // Gap between cells
-const STEP = CELL + GAP // Distance between cells (18px)
-const TOP_OFFSET = 22 // Vertical offset from top for first row
+// Layout
+const LAYOUT = {
+  CELL: 14,
+  GAP: 4,
+  TOP_OFFSET: 22,
+  SVG_W: 950,
+  SVG_H: 144,
+}
+const STEP = LAYOUT.CELL + LAYOUT.GAP
 
-const SVG_W = 950 // Fixed SVG width
-const SVG_H = 144 // Fixed SVG height
-
-// Number of weeks = total contributions / 7 days
-const weeksCount = Math.ceil(contributions.length / 7)
-const weeks = Array.from({ length: weeksCount })
-
-// A normalized cell structure with absolute coordinates
+// Helpers & data structures
 type Cell = {
   weekIndex: number
   dayIndex: number
   x: number
   y: number
   date: string
-  level: keyof typeof githubColorLevel
+  level: number
   count: number
 }
 
-// Flattened array of all cells in the grid
+// Current theme data
+const { colors, meta } = themes[theme]
+
+const weeksCount = Math.ceil(contributions.length / 7)
+const weeks = Array.from({ length: weeksCount })
+
 const cells: Cell[] = weeks.flatMap((_, weekIndex) =>
   contributions
     .slice(weekIndex * 7, weekIndex * 7 + 7)
@@ -50,51 +61,54 @@ const cells: Cell[] = weeks.flatMap((_, weekIndex) =>
       weekIndex,
       dayIndex,
       x: weekIndex * STEP,
-      y: TOP_OFFSET + dayIndex * STEP,
+      y: LAYOUT.TOP_OFFSET + dayIndex * STEP,
       date,
-      level,
+      level: Number(level),
       count,
     }))
 )
+
+// PRECOMPUTE month labels (Astro-friendly: simple data, no JSX from functions)
+const monthLabels: { x: number; label: string }[] = []
+for (let weekIndex = 1; weekIndex < weeksCount; weekIndex++) {
+  const week = contributions.slice(weekIndex * 7, weekIndex * 7 + 7)
+  if (week.length === 0) continue
+
+  const month = formatDate(locale, week[0]?.date)
+  const prevWeek = contributions.slice(
+    (weekIndex - 1) * 7,
+    (weekIndex - 1) * 7 + 7
+  )
+  const prevMonth =
+    prevWeek.length > 0 ? formatDate(locale, prevWeek[0]?.date) : null
+
+  if (month !== prevMonth) {
+    const label = month.charAt(0).toUpperCase() + month.slice(1)
+    monthLabels.push({ x: weekIndex * STEP, label })
+  }
+}
 ---
 
 <div class="relative pb-8 lg:pt-4 lg:pb-4">
   <div
     id="activity-wrapper"
     class="relative"
-    style={`width:${SVG_W}px; height:${SVG_H}px;`}
+    style={`width:${LAYOUT.SVG_W}px; height:${LAYOUT.SVG_H}px;`}
   >
     <svg
       id="activity-svg"
-      width={SVG_W}
-      height={SVG_H}
-      viewBox={`0 0 ${SVG_W} ${SVG_H}`}
+      width={LAYOUT.SVG_W}
+      height={LAYOUT.SVG_H}
+      viewBox={`0 0 ${LAYOUT.SVG_W} ${LAYOUT.SVG_H}`}
       style="display:block; overflow:visible;"
     >
       <g>
         {
-          weeks.map((_, weekIndex) => {
-            const week = contributions.slice(weekIndex * 7, weekIndex * 7 + 7)
-            if (week.length === 0 || weekIndex === 0) return null
-
-            const month = formatDate(locale, week[0]?.date)
-            const prevWeek = contributions.slice(
-              (weekIndex - 1) * 7,
-              (weekIndex - 1) * 7 + 7
-            )
-            const prevMonth =
-              prevWeek.length > 0 ? formatDate(locale, prevWeek[0]?.date) : null
-
-            // Only render month label when it changes
-            if (month !== prevMonth) {
-              return (
-                <text x={weekIndex * STEP} y={0} fill="currentColor">
-                  {month.replace(/^./, (c) => c.toUpperCase())}
-                </text>
-              )
-            }
-            return null
-          })
+          monthLabels.map((m) => (
+            <text x={m.x} y={0} fill="currentColor" class={meta.text}>
+              {m.label}
+            </text>
+          ))
         }
       </g>
 
@@ -104,11 +118,11 @@ const cells: Cell[] = weeks.flatMap((_, weekIndex) =>
             data-cell-index={i}
             x={cell.x}
             y={cell.y}
-            width={CELL}
-            height={CELL}
+            width={LAYOUT.CELL}
+            height={LAYOUT.CELL}
             rx="2"
             ry="2"
-            fill={githubColorLevel[cell.level]}
+            fill={colors[cell.level]}
             style="stroke: rgba(255, 255, 255, 0.04); cursor:pointer;"
           />
         ))
@@ -118,7 +132,7 @@ const cells: Cell[] = weeks.flatMap((_, weekIndex) =>
     <div
       id="activity-overlays"
       class="absolute top-0 left-0"
-      style={`width:${SVG_W}px; height:${SVG_H}px;`}
+      style={`width:${LAYOUT.SVG_W}px; height:${LAYOUT.SVG_H}px;`}
     >
       {
         cells.map((cell, i) => {
@@ -134,9 +148,11 @@ const cells: Cell[] = weeks.flatMap((_, weekIndex) =>
             <div
               class="activity-overlay group pointer-events-auto absolute"
               data-cell-index={i}
-              style={`left:0px; top:0px; width:${CELL}px; height:${CELL}px;`}
+              style={`left:0px; top:0px; width:${LAYOUT.CELL}px; height:${LAYOUT.CELL}px;`}
             >
-              <span class="pointer-events-none absolute bottom-full left-1/2 w-max -translate-x-1/2 -translate-y-0.5 rounded-md bg-stone-800 px-2 py-1 text-xs text-stone-50 opacity-0 transition-all group-hover:-translate-y-1 group-hover:opacity-100">
+              <span
+                class={`pointer-events-none absolute bottom-full left-1/2 w-max -translate-x-1/2 -translate-y-0.5 rounded-md px-2 py-1 text-xs opacity-0 transition-all group-hover:-translate-y-1 group-hover:opacity-100 ${meta.tooltipBg} ${meta.tooltipText}`}
+              >
                 {tooltipText}
               </span>
             </div>
@@ -147,20 +163,12 @@ const cells: Cell[] = weeks.flatMap((_, weekIndex) =>
   </div>
 
   <span
-    class="text-muted-foreground mt-2 block w-full text-left text-sm"
-    set:html={tf(totalMessage, {
-      total: total.lastYear,
-    })}
+    class={`mt-2 block w-full text-left text-sm ${meta.text}`}
+    set:html={tf(totalMessage, { total: total.lastYear })}
   />
 </div>
 
 <script type="module">
-  /**
-   * Synchronizes the HTML overlays with the SVG cells.
-   * - Reads bounding boxes of <rect> elements
-   * - Positions the overlays at the exact same coordinates
-   * - Ensures tooltips are always aligned, even if the SVG is scaled
-   */
   function syncOverlays() {
     const svg = document.getElementById("activity-svg")
     const wrapper = document.getElementById("activity-wrapper")
@@ -180,36 +188,15 @@ const cells: Cell[] = weeks.flatMap((_, weekIndex) =>
       if (!overlay) return
       const rRect = r.getBoundingClientRect()
 
-      // Position relative to wrapper container
-      const left = rRect.left - wrapperRect.left
-      const top = rRect.top - wrapperRect.top
-
-      overlay.style.left = `${Math.round(left)}px`
-      overlay.style.top = `${Math.round(top)}px`
+      overlay.style.left = `${Math.round(rRect.left - wrapperRect.left)}px`
+      overlay.style.top = `${Math.round(rRect.top - wrapperRect.top)}px`
       overlay.style.width = `${Math.round(rRect.width)}px`
       overlay.style.height = `${Math.round(rRect.height)}px`
     })
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    // Initial sync after render
+  function setupOverlaySync() {
     requestAnimationFrame(syncOverlays)
-
-    // Re-sync on window resize
-    window.addEventListener("resize", () => requestAnimationFrame(syncOverlays))
-
-    // Observe wrapper size changes (responsive layouts)
-    const wrapper = document.getElementById("activity-wrapper")
-    if (window.ResizeObserver && wrapper) {
-      const ro = new ResizeObserver(() => requestAnimationFrame(syncOverlays))
-      ro.observe(wrapper)
-    }
-  })
-
-  // Support Astro client-side navigation swaps
-  document.addEventListener("astro:after-swap", () => {
-    requestAnimationFrame(syncOverlays)
-
     window.addEventListener("resize", () => requestAnimationFrame(syncOverlays))
 
     const wrapper = document.getElementById("activity-wrapper")
@@ -217,5 +204,8 @@ const cells: Cell[] = weeks.flatMap((_, weekIndex) =>
       const ro = new ResizeObserver(() => requestAnimationFrame(syncOverlays))
       ro.observe(wrapper)
     }
-  })
+  }
+
+  document.addEventListener("DOMContentLoaded", setupOverlaySync)
+  document.addEventListener("astro:after-swap", setupOverlaySync)
 </script>
