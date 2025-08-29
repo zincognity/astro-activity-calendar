@@ -1,1 +1,1 @@
-export { default as ActivityCalendar } from "./ActivityCalendar.astro"
+export { default as GithubActivity } from "./GithubActivity.astro"

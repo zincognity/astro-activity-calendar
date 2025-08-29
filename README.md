@@ -24,13 +24,13 @@ npm install astro-github-activity
 
 ```astro
 ---
-import ActivityCalendar from "astro-github-activity"
+import GithubActivity from "astro-github-activity"
 `
 // Example: pass GitHub username to fetch contributions
 const username = "your-github-username"
 ---
 
-<ActivityCalendar user={username} />
+<GithubActivity user={username} />
 ```
 
 # Props
@@ -53,10 +53,10 @@ const username = "your-github-username"
 
 ```astro
 ---
-import ActivityCalendar from "astro-github-activity"
+import GithubActivity from "astro-github-activity"
 ---
 
-<ActivityCalendar user={"zincognity"} theme="dark" />
+<GithubActivity user={"zincognity"} theme="dark" />
 ```
 
 # Development
