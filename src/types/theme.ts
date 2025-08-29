@@ -6,7 +6,6 @@ export type ThemeProps = Record<
     colors: Record<number, string>
     meta: {
       text: string
-      tooltipBg: string
       tooltipText: string
     }
   }

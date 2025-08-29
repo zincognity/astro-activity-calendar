@@ -92,12 +92,12 @@ const monthLabels = buildMonthLabels(contributions, locale)
 
           return (
             <div
-              class="activity-overlay group pointer-events-auto absolute"
+              class="activity-overlay group pointer-events-auto absolute bg-neutral-800"
               data-cell-index={i}
               style={`left:0px; top:0px; width:${LAYOUT.CELL}px; height:${LAYOUT.CELL}px;`}
             >
               <span
-                class={`pointer-events-none absolute bottom-full left-1/2 w-max -translate-x-1/2 -translate-y-0.5 rounded-md bg-neutral-800 px-2 py-1 text-xs opacity-0 transition-all group-hover:-translate-y-1 group-hover:opacity-100 ${meta.tooltipBg} ${meta.tooltipText}`}
+                class={`pointer-events-none absolute bottom-full left-1/2 w-max -translate-x-1/2 -translate-y-0.5 rounded-md bg-neutral-800 px-2 py-1 text-xs opacity-0 transition-all group-hover:-translate-y-1 group-hover:opacity-100 ${meta.tooltipText}`}
               >
                 {tooltipText}
               </span>

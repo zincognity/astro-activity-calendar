@@ -16,7 +16,6 @@ export const themes: ThemeProps = {
     },
     meta: {
       text: "text-neutral-200",
-      tooltipBg: "bg-neutral-800",
       tooltipText: "text-neutral-50",
     },
   },
@@ -30,7 +29,6 @@ export const themes: ThemeProps = {
     },
     meta: {
       text: "text-neutral-800",
-      tooltipBg: "bg-white shadow-md border border-neutral-200",
       tooltipText: "text-neutral-900",
     },
   },
@@ -44,7 +42,6 @@ export const themes: ThemeProps = {
     },
     meta: {
       text: "text-neutral-200",
-      tooltipBg: "bg-neutral-800",
       tooltipText: "text-neutral-50",
     },
   },
