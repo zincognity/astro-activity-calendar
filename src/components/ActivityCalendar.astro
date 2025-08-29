@@ -35,6 +35,71 @@ const cells = buildCells(contributions)
 const monthLabels = buildMonthLabels(contributions, locale)
 ---
 
+<style>
+  /* Principal container */
+  #activity-wrapper {
+    position: relative;
+    padding-bottom: 2rem;
+  }
+
+  @media (min-width: 1024px) {
+    #activity-wrapper {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+  }
+
+  /* SVG container */
+  #activity-svg {
+    display: block;
+    overflow: visible;
+  }
+
+  /* Overlay for each cell */
+  .activity-overlay {
+    position: absolute;
+    pointer-events: auto;
+  }
+
+  /* Tooltip inside the overlay */
+  .activity-overlay span {
+    pointer-events: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(0.125rem);
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: all 0.2s ease;
+    background-color: rgb(63, 63, 70);
+    color: white;
+    white-space: nowrap;
+    z-index: 10;
+  }
+
+  .activity-overlay:hover span,
+  .activity-overlay:focus-within span {
+    transform: translateX(-50%) translateY(-0.25rem);
+    opacity: 1;
+  }
+
+  /* Total contributions text */
+  #activity-total {
+    margin-top: 3rem;
+    width: 100%;
+    text-align: left;
+    font-size: 0.875rem;
+  }
+
+  /* Adjustments for month labels */
+  .month-label {
+    font-size: 15px;
+    fill: currentColor;
+  }
+</style>
+
 <div class="relative pb-8 lg:pt-4 lg:pb-4">
   <div
     id="activity-wrapper"
@@ -46,35 +111,38 @@ const monthLabels = buildMonthLabels(contributions, locale)
       width={LAYOUT.SVG_W}
       height={LAYOUT.SVG_H}
       viewBox={`0 0 ${LAYOUT.SVG_W} ${LAYOUT.SVG_H}`}
-      style="display:block; overflow:visible;"
     >
-      <g>
+      <g class="month-label" transform="translate(0, 15)">
         {
           monthLabels.map((m) => (
-            <text x={m.x} y={0} fill="currentColor" class={meta.text}>
+            <text x={m.x} y={0} class={meta.text}>
               {m.label}
             </text>
           ))
         }
       </g>
 
-      {
-        cells.map((cell, i) => (
-          <rect
-            data-cell-index={i}
-            x={cell.x}
-            y={cell.y}
-            width={LAYOUT.CELL}
-            height={LAYOUT.CELL}
-            rx="2"
-            ry="2"
-            fill={colors[cell.level]}
-            style="stroke: rgba(255, 255, 255, 0.04); cursor:pointer;"
-          />
-        ))
-      }
+      {/* Contribution cells */}
+      <g transform="translate(0, 20)">
+        {
+          cells.map((cell, i) => (
+            <rect
+              data-cell-index={i}
+              x={cell.x}
+              y={cell.y}
+              width={LAYOUT.CELL}
+              height={LAYOUT.CELL}
+              rx="2"
+              ry="2"
+              fill={colors[cell.level]}
+              style="stroke: rgba(255, 255, 255, 0.04); cursor:pointer;"
+            />
+          ))
+        }
+      </g>
     </svg>
 
+    {/* Overlays for tooltips */}
     <div
       id="activity-overlays"
       class="absolute top-0 left-0"
@@ -94,7 +162,7 @@ const monthLabels = buildMonthLabels(contributions, locale)
             <div
               class="activity-overlay group pointer-events-auto absolute"
               data-cell-index={i}
-              style={`left:0px; top:0px; width:${LAYOUT.CELL}px; height:${LAYOUT.CELL}px;`}
+              style={`left:${cell.x}px; top:${cell.y + 20}px; width:${LAYOUT.CELL}px; height:${LAYOUT.CELL}px;`}
             >
               <span
                 class={`pointer-events-none absolute bottom-full left-1/2 w-max -translate-x-1/2 -translate-y-0.5 rounded-md px-2 py-1 text-xs opacity-0 transition-all group-hover:-translate-y-1 group-hover:opacity-100 ${meta.tooltipText}`}
@@ -110,12 +178,13 @@ const monthLabels = buildMonthLabels(contributions, locale)
   </div>
 
   <span
-    class={`mt-2 block w-full text-left text-sm ${meta.text}`}
+    id="activity-total"
+    class={`mt-5 block w-full text-left text-sm ${meta.text}`}
     set:html={tf(totalMessage, { total: total.lastYear })}
   />
 </div>
 
-<script type="module">
+<script is:inline>
   function syncOverlays() {
     const svg = document.getElementById("activity-svg")
     const wrapper = document.getElementById("activity-wrapper")

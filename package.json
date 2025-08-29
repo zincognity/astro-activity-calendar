@@ -1,60 +1,17 @@
 {
   "name": "astro-github-activity",
   "version": "1.4.2",
-  "description": "A calendar component for displaying GitHub activity",
   "author": {
     "name": "Incognity",
     "email": "contact@incognity.dev",
     "url": "https://incognity.dev"
   },
-  "type": "module",
-  "exports": {
-    ".": "./index.ts",
-    "./types": "./index.types.ts",
-    "./data": "./index.data.ts",
-    "./css": "./dist/output.css"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zincognity/astro-github-activity.git"
   },
-  "files": [
-    "dist",
-    "src",
-    "index.ts",
-    "index.types.ts",
-    "index.data.ts"
-  ],
-  "keywords": [
-    "astro",
-    "calendar",
-    "github",
-    "activity"
-  ],
-  "license": "MIT",
-  "scripts": {
-    "build": "astro build && npm run build:css",
-    "build:css": "tailwindcss -i ./src/index.css -o ./dist/output.css --minify",
-    "publish:package": "npm publish --access public",
-    "lint": "eslint . --ext .astro,.js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .astro,.js,.jsx,.ts,.tsx --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check",
-    "type:check": "astro check"
-  },
-  "lint-staged": {
-    "*.{js,ts,cjs,mjs,astro,jsx,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
-  },
-  "peerDependencies": {
-    "tailwindcss": "^4.1.12",
-    "@tailwindcss/vite": "^4.1.12"
-  },
   "devDependencies": {
     "@eslint/js": "9.34.0",
-    "@tailwindcss/cli": "4.1.12",
     "@typescript-eslint/parser": "8.41.0",
     "astro": "^5.13.4",
     "eslint": "9.34.0",
@@ -66,8 +23,29 @@
     "prettier-plugin-astro": "0.14.1",
     "prettier-plugin-astro-organize-imports": "0.4.11",
     "prettier-plugin-organize-imports": "4.2.0",
-    "prettier-plugin-tailwindcss": "0.6.14",
     "typescript": "5.9.2",
     "typescript-eslint": "8.41.0"
-  }
+  },
+  "exports": {
+    ".": "./index.ts",
+    "./types": "./index.types.ts",
+    "./data": "./index.data.ts"
+  },
+  "description": "A calendar component for displaying GitHub activity",
+  "files": ["dist", "src", "index.ts", "index.types.ts", "index.data.ts"],
+  "keywords": ["astro", "calendar", "github", "activity"],
+  "license": "MIT",
+  "lint-staged": {
+    "*.{js,ts,cjs,mjs,astro,jsx,tsx}": ["eslint --fix", "prettier --write"]
+  },
+  "scripts": {
+    "build": "astro build",
+    "publish:package": "npm publish --access public",
+    "lint": "eslint . --ext .astro,.js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .astro,.js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check",
+    "type:check": "astro check"
+  },
+  "type": "module"
 }

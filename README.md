@@ -24,10 +24,8 @@ npm install astro-github-activity
 
 ```astro
 ---
-// Import the CSS styles
-import "astro-github-activity/css"
 import ActivityCalendar from "astro-github-activity"
-
+`
 // Example: pass GitHub username to fetch contributions
 const username = "your-github-username"
 ---
