@@ -35,7 +35,7 @@
   "scripts": {
     "build": "astro build && npm run build:css",
     "build:css": "tailwindcss -i ./src/index.css -o ./dist/output.css --minify",
-    "publish:package": "npm publish",
+    "publish:package": "npm publish --access public",
     "lint": "eslint . --ext .astro,.js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .astro,.js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write .",
