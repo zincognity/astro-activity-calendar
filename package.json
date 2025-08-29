@@ -1,6 +1,6 @@
 {
   "name": "astro-github-activity",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "A calendar component for displaying GitHub activity",
   "author": {
     "name": "Incognity",
