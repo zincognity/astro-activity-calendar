@@ -10,6 +10,8 @@ to fetch GitHub activity data.
 
 ---
 
+![example](<img/Screenshot 2025-08-28 at 6.20.28 PM.png>)
+
 ## Installation
 
 Install via npm:
@@ -47,7 +49,7 @@ const username = "your-github-username"
 
 # Examples
 
-[This is an example of use in my portfolio](https://zincognity.dev#activity)
+[This is an example of use in my portfolio](https://incognity.dev#activity)
 
 ## Dark theme
 
